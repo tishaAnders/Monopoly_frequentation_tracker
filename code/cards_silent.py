@@ -26,44 +26,31 @@ def advance_to_next_station(pos):
 
 def draw_card_silently(special_field, pos):
     if "cc" in special_field:
-        #print(" - community chest card has been drawn - ")
         num1 = np.random.randint(0,len(cc_card_stack))
-        #print("random number out of stack: " + str(num1))
         advance_to = cc_card_stack[num1]
-        #print("position to move to: " + str(advance_to))
         if advance_to == 777:
             advance_to = pos
-            #print(" - no need to move - ")
             return 0
         else:
-            #print("- move forward " + str(advance_to-pos) + " steps - ")
             return advance_to - pos
     elif "chance" in special_field:
-        #print(" - chance card has been drawn - ")
         num2 = np.random.randint(0,len(chance_card_stack))
-        #print("random number out of stack: " + str(num2))
         advance_to = chance_card_stack[num2]
-        #print("position to move to: " + str(advance_to))
         if advance_to == 12: # nearest utility
-            #print("Advance to the next utility!")
             if pos <= 12:
                 return 12 - pos
             else:
                 return 28 - pos
         elif advance_to == 15: # nearest station
-             #print("Advance to the next station!")
              advance_to = advance_to_next_station(pos)
              return (advance_to - pos)%40
         elif advance_to == 999: # go back 3 spaces
             advance_to = pos-3
-            #print("Go back 3 spaces!")
             return - 3
         elif advance_to == 777: # no need to move
             advance_to = pos
-            #print(" - no need to move - ")
             return 0 # don't move anywhere
         else: # go straight to position XYZ
-            #print("Advance to " + monopoly_board[advance_to] + " !")
             return (advance_to - pos)%40
 
 
