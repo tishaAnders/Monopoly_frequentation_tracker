@@ -21,16 +21,12 @@ def advance_to_next_station(pos):
         return 35
 
 
-
-
-
 def draw_card(special_field, pos):
     if "cc" in special_field:
         print(" - community chest card has been drawn - ")
         num1 = np.random.randint(0,len(cc_card_stack))
         #print("random number out of stack: " + str(num1))
         advance_to = cc_card_stack[num1]
-        #print("position to move to: " + str(advance_to))
         if advance_to == 777:
             advance_to = pos
             print(" - no need to move - ")
@@ -41,9 +37,7 @@ def draw_card(special_field, pos):
     elif "chance" in special_field:
         print(" - chance card has been drawn - ")
         num2 = np.random.randint(0,len(chance_card_stack))
-        #print("random number out of stack: " + str(num2))
         advance_to = chance_card_stack[num2]
-        #print("position to move to: " + str(advance_to))
         if advance_to == 12: # nearest utility
             print("Advance to the next utility!")
             if pos <= 12:
