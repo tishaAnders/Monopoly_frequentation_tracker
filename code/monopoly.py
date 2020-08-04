@@ -1,5 +1,5 @@
 ### main class of monopoly game
-# defines the board,
+
 
 import numpy as np
 from dice import rollDice
