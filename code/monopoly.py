@@ -1,6 +1,5 @@
 ### main class of monopoly game
 
-
 import numpy as np
 from dice import rollDice
 from cards import card
@@ -10,6 +9,7 @@ import random
 from datetime import datetime
 from matplotlib import pyplot as plt
 import sys
+import re
 
 
 monopoly_board = ["Go", "brown_1", "cc_1", "brown_2", "income_tax", "station_1", "light_blue_1", "chance_1", "light_blue_2", "light_blue_3", "prison_field",
@@ -38,37 +38,52 @@ verbose_exec = input("Do you wish verbose execution? (Type 'yes' or 'no') ")
 
 if verbose_exec == "no":
     for i in range(len(dicerolls)):
+        #print("rolling result: " + str(dicerolls[i].result))
         doubles_list.append(dicerolls[i].doubles)
+        #print("doubles? " + str(doubles_list[-1]))
         current_pos = (current_pos + dicerolls[i].result)%no_fields
+        #print("current modulus:" + str(current_pos))
         positions_list.append(current_pos)
+        #print("current position: " + monopoly_board[current_pos])
         landings_counter[current_pos] += 1
-        if i>1 and Dice.go_to_jail(i, current_pos, doubles_list[-1], doubles_list[-2], doubles_list[-3]):
+        if i>1 and dice.go_to_jail(i, current_pos, doubles_list[-1], doubles_list[-2], doubles_list[-3]):
+            #print("GO TO JAIL!")
             if positions_list[-1] != 30:
                 positions_list = positions_list[:-1]
                 landings_counter[current_pos] -= 1
             current_pos = 10
+            #print("current position: " + monopoly_board[current_pos])
             positions_list.append(current_pos)
             landings_counter[current_pos] += 1
         elif "cc" in monopoly_board[current_pos]:
+            #print("DRAW COMMUNITY CHEST CARD!")
             cc_card = card_s("cc", current_pos)
+            #print("Do we need to move? " + str(cc_card.advance_to != current_pos))
             if cc_card.advance_to != current_pos:
                 current_pos = cc_card.advance_to
                 positions_list.append(current_pos)
+            #print("current position: " + monopoly_board[current_pos])
+            #landings_counter[current_pos] += 1
         elif "chance" in monopoly_board[current_pos]:
+            #print("DRAW CHANCE CARD!")
             chance_card = card_s("chance", current_pos)
+            #print("Do we need to move? " + str(chance_card.advance_to != current_pos))
             if chance_card.advance_to != current_pos:
                 current_pos = chance_card.advance_to
                 positions_list.append(current_pos)
+            #print("current position: " + monopoly_board[current_pos])
+        #print("_________________________________________")
 elif verbose_exec == "yes":
         for i in range(len(dicerolls)):
             print("rolling result: " + str(dicerolls[i].result))
             doubles_list.append(dicerolls[i].doubles)
             print("doubles? " + str(doubles_list[-1]))
             current_pos = (current_pos + dicerolls[i].result)%no_fields
+            #print("current modulus:" + str(current_pos))
             positions_list.append(current_pos)
             print("current position: " + monopoly_board[current_pos])
             landings_counter[current_pos] += 1
-            if i>1 and Dice.go_to_jail(i, current_pos, doubles_list[-1], doubles_list[-2], doubles_list[-3]):
+            if i>1 and dice.go_to_jail(i, current_pos, doubles_list[-1], doubles_list[-2], doubles_list[-3]):
                 print("GO TO JAIL!")
                 if positions_list[-1] != 30:
                     positions_list = positions_list[:-1]
@@ -80,6 +95,7 @@ elif verbose_exec == "yes":
             elif "cc" in monopoly_board[current_pos]:
                 print("DRAW COMMUNITY CHEST CARD!")
                 cc_card = card("cc", current_pos)
+                #print("Do we need to move? " + str(cc_card.advance_to != current_pos))
                 if cc_card.advance_to != current_pos:
                     current_pos = cc_card.advance_to
                     positions_list.append(current_pos)
@@ -87,6 +103,7 @@ elif verbose_exec == "yes":
             elif "chance" in monopoly_board[current_pos]:
                 print("DRAW CHANCE CARD!")
                 chance_card = card("chance", current_pos)
+                #print("Do we need to move? " + str(chance_card.advance_to != current_pos))
                 if chance_card.advance_to != current_pos:
                     current_pos = chance_card.advance_to
                     positions_list.append(current_pos)
@@ -102,6 +119,15 @@ print(str(total_moves) + " dice rolls have been executed.")
 
 display_properties_only = input("Do you wish to see results for all spaces or for properties only? (Type 'a' or 'p') ")
 
+
+def comma_me(amount):
+    orig = amount
+    new = re.sub("^(-?\d+)(\d{3})", '\g<1>,\g<2>', amount)
+    if orig == new:
+        return new
+    else:
+        return comma_me(new)
+
 colours = ["lightgrey", "saddlebrown", "palegreen", "saddlebrown", "lightgrey", "black", "deepskyblue", "palegreen", "deepskyblue", "deepskyblue", "lightgrey",
 "magenta", "grey", "magenta", "magenta", "black", "orange", "palegreen", "orange", "orange", "lightgrey",
 "red", "palegreen", "red", "red", "black", "yellow", "yellow", "grey", "yellow", "lightgrey",
@@ -115,7 +141,7 @@ if display_properties_only == "a":
     plt.xticks(rotation=90)
     plt.xlabel("board squares")
     plt.ylabel("landings after " + str(total_moves) + " dice rolls")
-    plt.title("Frequentation of squares in Monopoly board game, after " + str(total_moves) + " dice rolls" )
+    plt.title("Frequentation of squares in Monopoly board game, after " + comma_me(str(total_moves)) + " dice rolls" )
     plt.show()
 elif display_properties_only == "p":
     non_property_positions = [0, 2, 4, 7, 10, 17, 20, 22, 30, 33, 36, 38]
@@ -132,7 +158,7 @@ elif display_properties_only == "p":
     plt.xticks(rotation=90)
     plt.xlabel("board squares")
     plt.ylabel("landings after " + str(total_moves) + " dice rolls")
-    plt.title("Frequentation of squares in Monopoly board game, after " + str(total_moves) + " dice rolls" )
+    plt.title("Frequentation of squares in Monopoly board game, after " + comma_me(str(total_moves)) + " dice rolls" )
     plt.show()
 else:
     sys.exit("Uh oh, a typo! Execution has been stopped.")
