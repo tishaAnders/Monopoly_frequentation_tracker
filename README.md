@@ -19,4 +19,4 @@ Two dice are thrown *n* times, where *n* is determined by the user input. The vi
 ## Usage
 
 Download all `.py` files and run `monopoly.py` to execute the program. 
-Concerning the input, it is recommended that you roll the dice at least *10k* times to obtain results of any use. To get solid results, dial up to *1m* throws, or more. Finally, the program will generate a bar chart, showing the number of visits on each space.
+You should roll the dice at least *10k* times to obtain useful results. To get solid results, dial up to *1m* throws, or more. Finally, the program will generate a bar chart, showing the number of visits on each space.
